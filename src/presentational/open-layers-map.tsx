@@ -1,58 +1,59 @@
-import React, { useRef, useEffect, MutableRefObject } from 'react';
-import { Paper, makeStyles, createStyles } from '@material-ui/core';
-import { Map, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
+import React, { useRef, useEffect, MutableRefObject } from "react";
+import { Paper, makeStyles, createStyles } from "@material-ui/core";
+import { Map, View } from "ol";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
 
-import 'ol/ol.css';
+import "ol/ol.css";
 
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
-        display: 'flex',
-        alignItems: 'stretch',
-        width: '100%',
-        minHeight: '400px'
+      display: "flex",
+      alignItems: "stretch",
+      width: "100%",
+      height: "50vh",
+      minHeight: "400px",
     },
     map: {
-        flex: 1
-    }
-  }),
+      flex: 1,
+    },
+  })
 );
 
 const useOpenLayersMap = (element: MutableRefObject<HTMLElement | null>) => {
-    const mapRef = useRef<Map | undefined>();
+  const mapRef = useRef<Map | undefined>();
 
-    useEffect(() => {
-        if (!element.current) {
-            return;
-        }
+  useEffect(() => {
+    if (!element.current) {
+      return;
+    }
 
-        mapRef.current = new Map({
-            target: element.current,
-            layers: [
-                new TileLayer({
-                    source: new OSM()
-                })
-            ],
-            view: new View({
-                center: [0, 0],
-                zoom: 0
-            })
-        });
+    mapRef.current = new Map({
+      target: element.current,
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      view: new View({
+        center: [0, 0],
+        zoom: 0,
+      }),
+    });
 
-        return () => mapRef.current?.dispose();
-    }, [element]);
-}
+    return () => mapRef.current?.dispose();
+  }, [element]);
+};
 
 export const OpenLayersMap = () => {
-    const {root, map} = useStyles();
-    const mapHolderRef = useRef<HTMLDivElement | null>(null);
-    useOpenLayersMap(mapHolderRef);
+  const { root, map } = useStyles();
+  const mapHolderRef = useRef<HTMLDivElement | null>(null);
+  useOpenLayersMap(mapHolderRef);
 
-    return (
-        <Paper className={root}>
-            <div ref={mapHolderRef} className={map} />
-        </Paper>
-    );
+  return (
+    <Paper className={root}>
+      <div ref={mapHolderRef} className={map} />
+    </Paper>
+  );
 };
