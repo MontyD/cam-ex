@@ -2,9 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
+import { MainLayout } from './layout/main';
+
 ReactDOM.render(
   <React.StrictMode>
-    <div>Hello World</div>
+    <MainLayout />
   </React.StrictMode>,
   document.getElementById('root')
 );
