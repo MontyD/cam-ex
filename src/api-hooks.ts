@@ -26,7 +26,12 @@ export const useFetch = <T>(url: string | null, resultMapper?: (rawResult: any) 
         Accept: "application/json",
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error(`Fetch failed (${res.status}): ${res.statusText}`);
+      })
       .then((jsonResult) => {
         if (!isCancelled) {
           const parsedResult = resultMapper ? resultMapper(jsonResult) : jsonResult;
@@ -37,8 +42,6 @@ export const useFetch = <T>(url: string | null, resultMapper?: (rawResult: any) 
         }
       })
       .catch((error) => {
-        console.trace(error);
-        console.log(error);
         setLoading(false);
         setData(null);
         setError(error);
@@ -81,9 +84,10 @@ export interface DayWeather {
   description?: string;
 }
 export const useWeatherSearch = (unit: string, lon?: number, lat?: number) => {
+  const apiKey = process.env.REACT_APP_WEATHER_KEY;
   return useFetch<DayWeather[]>(
     lon !== undefined && lat !== undefined
-      ? `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=&units=${unit}`
+      ? `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}&units=${unit}`
       : null,
     useCallback((response: any) => {
       const daily = response?.daily ?? [];
