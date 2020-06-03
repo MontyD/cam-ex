@@ -1,7 +1,7 @@
 on: push
 
 jobs:
-  pubish-release-if-needed:
+  publish-release-if-needed:
     runs-on: ubuntu-latest
     steps:
     - uses: MontyD/package-json-updated-action@0.2.0
