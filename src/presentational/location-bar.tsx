@@ -3,6 +3,7 @@ import {
   Grid,
   Typography,
   Paper,
+  CircularProgress,
   makeStyles,
   createStyles,
 } from "@material-ui/core";
@@ -20,7 +21,8 @@ const useStyles = makeStyles(() =>
 
 export const LocationBar = (props: {
   onSearchConfirmed: (searchTerm: string) => void;
-  currentLocation: string;
+  isLoading: boolean;
+  currentLocation?: string;
 }) => {
   const { container } = useStyles();
 
@@ -28,15 +30,14 @@ export const LocationBar = (props: {
     <Paper variant="outlined" className={container}>
       <Grid container spacing={3} alignItems="center">
         <Grid item md={6} sm={5} xs={5}>
-          <Typography variant="h6">
-            {props.currentLocation || "No location"}
-          </Typography>
+          {props.isLoading ? (
+            <CircularProgress />
+          ) : (
+            <Typography variant="h6">{props.currentLocation || "No location"}</Typography>
+          )}
         </Grid>
         <Grid item md={6} xs={7} sm={7}>
-          <SearchBar
-            onValueSubmit={props.onSearchConfirmed}
-            label="Search for location"
-          />
+          <SearchBar onValueSubmit={props.onSearchConfirmed} label="Search for location" />
         </Grid>
       </Grid>
     </Paper>

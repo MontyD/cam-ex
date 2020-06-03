@@ -1,19 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Grid, makeStyles, createStyles, Typography } from "@material-ui/core";
 import { ToggleButtonGroup, ToggleButton } from "@material-ui/lab";
 
+import { DayWeather } from "../api-hooks";
+import { unitContext } from "../context/temperature-unit";
 import { WeatherIllustration } from "./weather-illustration";
-
-const temperatureTypes = [
-  {
-    value: "celsius",
-    display: "°C",
-  },
-  {
-    value: "fahrenheit",
-    display: "°F",
-  },
-] as const;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -29,39 +20,40 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export const WeatherIndicator = () => {
+export const WeatherIndicator = (props: DayWeather) => {
   const { weatherIllustration, indicatorText } = useStyles();
-  const [tempType, setTempType] = useState(temperatureTypes[0].value);
+  const { temperatureUnits, updateUnit, currentUnit } = useContext(unitContext);
 
   return (
     <Grid container>
       <Grid item xs={12}>
         <ToggleButtonGroup
           exclusive
-          value={tempType}
-          onChange={(_, newValue) => setTempType(newValue)}
+          value={currentUnit}
+          onChange={(_, newValue) => updateUnit(newValue)}
         >
-          {temperatureTypes.map(({ value, display }) => (
-            <ToggleButton key={value} value={value}>
-              {display}
+          {temperatureUnits.map((unit) => (
+            <ToggleButton key={unit.name} value={unit}>
+              {unit.display}
             </ToggleButton>
           ))}
         </ToggleButtonGroup>
       </Grid>
       <Grid item md={12} sm={6} xs={6}>
         <div className={weatherIllustration}>
-          <WeatherIllustration weatherType="something" />
+          <WeatherIllustration weatherType={props.tag} />
         </div>
       </Grid>
       <Grid container item md={12} sm={6} xs={6}>
         <Grid item md={6} sm={12} xs={12}>
           <Typography variant="h3" className={indicatorText}>
-            30°C
+            {props.temperature}
+            {currentUnit.display}
           </Typography>
         </Grid>
         <Grid item md={6} sm={12} xs={12}>
           <Typography variant="h3" className={indicatorText}>
-            1000mB
+            {props.pressure}mB
           </Typography>
         </Grid>
       </Grid>

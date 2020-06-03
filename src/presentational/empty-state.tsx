@@ -1,14 +1,15 @@
 import React from "react";
 import { Typography, makeStyles, createStyles } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 import { ReactComponent as Icon } from "../weather-illustrations/raining-sun.svg";
 
 const useStyles = makeStyles(() =>
   createStyles({
-    text: {
+    block: {
       margin: "3rem auto 1rem",
       textAlign: "center",
-      width: "100%",
+      width: "80%",
     },
     icon: {
       display: "block",
@@ -20,14 +21,24 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export const EmptyState = () => {
-  const { text, icon } = useStyles();
+export const EmptyState = (props: { error?: Error | null }) => {
+  const { block, icon } = useStyles();
   return (
     <>
-      <Typography variant="body1" className={text}>
-        Search for a location using the search bar above
+      <Typography variant="body1" className={block}>
+        {!props.error
+          ? "Search for a location using the search bar above"
+          : "Something has gone wrong"}
       </Typography>
       <Icon className={icon} />
+      {props.error ? (
+        <Alert variant="outlined" severity="error" className={block}>
+          An error occured:{" "}
+          {props.error.message && props.error.message.length < 120
+            ? props.error.message
+            : "Please try again"}
+        </Alert>
+      ) : null}
     </>
   );
 };

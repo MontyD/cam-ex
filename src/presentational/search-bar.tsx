@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  FormControl,
-  InputLabel,
-  Input,
-  IconButton,
-  InputAdornment,
-} from "@material-ui/core";
+import { FormControl, InputLabel, Input, IconButton, InputAdornment } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 
 export const SearchBar = (props: {

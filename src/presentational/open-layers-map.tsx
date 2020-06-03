@@ -1,7 +1,10 @@
-import React, { useRef, useEffect, MutableRefObject } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { Paper, makeStyles, createStyles } from "@material-ui/core";
+
 import { Map, View } from "ol";
+import { transform } from "ol/proj";
 import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
 
 import "ol/ol.css";
@@ -21,39 +24,51 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const useOpenLayersMap = (element: MutableRefObject<HTMLElement | null>) => {
-  const mapRef = useRef<Map | undefined>();
+const useOpenLayersMap = () => {
+  const mapRef = useRef<Map | null>(null);
+
+  const setMapElementRef = useCallback((node: HTMLElement | null) => {
+    mapRef.current?.dispose();
+    mapRef.current = null;
+
+    if (node) {
+      mapRef.current = new Map({
+        target: node,
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+          new VectorLayer(),
+        ],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    }
+  }, []);
+
+  return [setMapElementRef, mapRef] as const;
+};
+
+export const OpenLayersMap = (props: { centerPoint?: [number, number] }) => {
+  const { root, map } = useStyles();
+  const [setMapElementRef, olMap] = useOpenLayersMap();
 
   useEffect(() => {
-    if (!element.current) {
+    if (!olMap.current || !props.centerPoint) {
       return;
     }
 
-    mapRef.current = new Map({
-      target: element.current,
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ],
-      view: new View({
-        center: [0, 0],
-        zoom: 0,
-      }),
+    olMap.current.getView().animate({
+      center: transform(props.centerPoint, "EPSG:4326", "EPSG:3857"),
+      zoom: 11,
     });
-
-    return () => mapRef.current?.dispose();
-  }, [element]);
-};
-
-export const OpenLayersMap = () => {
-  const { root, map } = useStyles();
-  const mapHolderRef = useRef<HTMLDivElement | null>(null);
-  useOpenLayersMap(mapHolderRef);
+  }, [props.centerPoint, olMap]);
 
   return (
     <Paper className={root}>
-      <div ref={mapHolderRef} className={map} />
+      <div ref={setMapElementRef} className={map} />
     </Paper>
   );
 };
