@@ -30,7 +30,11 @@ export const WeatherIndicator = (props: DayWeather) => {
         <ToggleButtonGroup
           exclusive
           value={currentUnit}
-          onChange={(_, newValue) => updateUnit(newValue)}
+          onChange={(_, newValue) => {
+            if (newValue) {
+              updateUnit(newValue);
+            }
+          }}
         >
           {temperatureUnits.map((unit) => (
             <ToggleButton key={unit.name} value={unit}>
