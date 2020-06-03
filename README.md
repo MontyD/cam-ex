@@ -21,3 +21,10 @@ npm start # starts a local dev environment
 ```
 npm run build # builds a production copy of the app
 ```
+
+
+### Hosted example
+
+The example is currently hosted on an AWS S3 bucket: http://monty-dawson-weather-app.s3-website.eu-west-2.amazonaws.com/.
+
+It is deployed using the Terraform scripts contained here https://github.com/MontyD/provisioning, deploying the zipped assets from a GitHub release - https://github.com/MontyD/weather-app/releases.
