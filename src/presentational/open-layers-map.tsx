@@ -54,17 +54,18 @@ const useOpenLayersMap = () => {
 export const OpenLayersMap = (props: { centerPoint?: [number, number] }) => {
   const { root, map } = useStyles();
   const [setMapElementRef, olMap] = useOpenLayersMap();
+  const [lon, lat] = props.centerPoint ?? [];
 
   useEffect(() => {
-    if (!olMap.current || !props.centerPoint) {
+    if (!olMap.current || lon === undefined || lat === undefined) {
       return;
     }
 
     olMap.current.getView().animate({
-      center: transform(props.centerPoint, "EPSG:4326", "EPSG:3857"),
+      center: transform([lon, lat], "EPSG:4326", "EPSG:3857"),
       zoom: 11,
     });
-  }, [props.centerPoint, olMap]);
+  }, [lon, lat, olMap]);
 
   return (
     <Paper className={root}>
