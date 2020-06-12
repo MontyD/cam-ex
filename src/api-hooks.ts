@@ -42,10 +42,16 @@ export const useFetch = <T>(url: string | null, resultMapper?: (rawResult: any) 
         }
       })
       .catch((error) => {
-        setLoading(false);
-        setData(null);
-        setError(error);
+        if (!isCancelled) {
+          setLoading(false);
+          setData(null);
+          setError(error);
+        }
       });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [url, resultMapper]);
 
   return [loading, error, data] as const;
