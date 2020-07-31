@@ -1,12 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import * as serviceWorker from './serviceWorker';
+import "whatwg-fetch";
+
+import React from "react";
+import ReactDOM from "react-dom";
+import * as serviceWorker from "./serviceWorker";
+
+import { WeatherApp } from "./app";
+import { TemperatureUnitProvider } from "./context/temperature-unit";
+import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div>Hello World</div>
+    <TemperatureUnitProvider>
+      <WeatherApp />
+    </TemperatureUnitProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 serviceWorker.register();
